@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+  web:
+    container_name: testing_task_python_container
+    build:
+      context: .
+      dockerfile: docker/python/Dockerfile
+    command: uvicorn app.main:app --host 0.0.0.0 --reload
+    volumes:
+      - './:/var/www/api_core'
+    ports:
+      - '8000:8000'
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    networks:
+      - testing_task
+    
+  redis:
+    image: redis:alpine
+    container_name: testing_task_redis_container
+    restart: on-failure
+    ports:
+      - '6379:6379'
+    command:
+      - redis-server
+      - '--requirepass root_123456'
+    volumes:
+      - cache:/data
+    networks:
+      - testing_task
+
+  db:
+    container_name: testing_task_db_container
+    image: postgres:15.0-alpine
+    ports:
+      - '5432:5432'
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=core_db_user
+      - POSTGRES_PASSWORD=pLabn_42c
+      - POSTGRES_DB=core_db
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - testing_task
+    
+    
+volumes:
+  db:
+    driver: local
+  cache:
+    driver: local
+
+networks:
+  testing_task:
+    driver: bridge
