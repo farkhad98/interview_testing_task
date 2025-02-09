@@ -21,7 +21,7 @@ router = APIRouter(
 )
 
 
-@router.get('/', response_model=List[GetActivitySerializer], summary="")
+@router.get('/', response_model=List[GetActivitySerializer])
 async def activities(
     _: str = Depends(authorization),
     db: AsyncSession = Depends(get_async_db),
