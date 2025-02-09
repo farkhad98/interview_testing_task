@@ -32,7 +32,7 @@ alembic upgrade head
 - **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 После запуска проекта заполните базу данных по ссылке:
-- **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs#/default/root__get)
+- **Swagger UI**: [http://localhost:8000/docs#/default/root__get](http://localhost:8000/docs#/default/root__get)
 
 ## 🛠 Основные команды
 
