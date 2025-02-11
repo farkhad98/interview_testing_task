@@ -28,6 +28,7 @@ class Activity(Base, TimestampMixin):
     children = relationship(
         "Activity",
         back_populates="parent",
+        lazy="selectin",
         cascade="all, delete-orphan",
     )
     pivot_organizations = relationship(

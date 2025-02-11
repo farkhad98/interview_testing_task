@@ -74,16 +74,20 @@ async def organizations_list(
         )
 
     if filters.activity_id is not None:
-        activities_ids = await db.execute(
-            select(Activity.id).where(
+        activities_ids = set()
+        activities = await db.execute(
+            select(Activity).options(
+                joinedload(Activity.children),
+            ).where(
                 Activity.parent_id == filters.activity_id,
-                Activity.parent_id == Activity.id,
             )
         )
-        activities_ids = [
-            activity_id for activity_id in activities_ids.unique().scalars()
-        ]
-        activities_ids.append(filters.activity_id)
+        for activity in activities.unique().scalars():
+            activities_ids.add(activity.id)
+            for child in activity.children:
+                activities_ids.add(child.id)
+
+        activities_ids.add(filters.activity_id)
         where_clause.append(
             Organization.pivot_activities.any(
                 OrganizationActivity.activity_id.in_(activities_ids),
